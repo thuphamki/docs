@@ -1,0 +1,69 @@
+---
+title: "Boards overview"
+description: "How Pricenxt boards organize cards, columns, and Supabase data."
+---
+
+## Purpose of boards
+
+Boards let teams curate the exact market signals they care about inside the dashboard. Every board belongs to a user or workspace and contains a set of ordered columns. Each column then hosts one or more cards—visual widgets that surface price intelligence, comparisons, or alerts.
+
+<Note icon="squares">Boards are the entry point to the dashboard experience. Users land here first, so content density and ordering directly impact perceived value.</Note>
+
+## Board anatomy
+
+<CardGroup cols={2}>
+<Card title="Columns" icon="table-columns" href="#columns">
+  Ordered swimlanes that buckets cards by workflow stage (e.g., Watchlist, Active Deals, Completed). Columns can be collapsed to reduce noise.
+</Card>
+<Card title="Cards" icon="square-poll-horizontal" href="/pricenxt/cards">
+  Self-contained insights such as price deltas, spreads, or comparison tables. Cards inherit their rendering logic from the Cards feature registry.
+</Card>
+</CardGroup>
+
+### Columns
+
+- Backed by the `columns` table in Supabase and loaded through `fetchBoard`.
+- Persist `order`, `name`, and `is_collapsed` flags so personalization survives reloads.
+- Support collapse/expand via the `onToggleCollapse` handler that flows through `KanbanProps`.
+
+### Cards inside a column
+
+- Stored as nested records in Supabase and hydrated via the same board query.
+- Sorted by the `order` field so drag-and-drop updates translate into deterministic layouts.
+- Carry `type` + `metadata` that tells the Cards rendering pipeline which component to mount and how to configure it.
+
+## Data lifecycle
+
+1. `fetchBoard(boardId)` retrieves the board + nested columns/cards in a single Supabase call.
+2. Results are normalized into the `KanbanColumn` + `KanbanProps` shape before reaching the UI layer.
+3. Any interaction that reorders, collapses, or edits cards emits an `onChange` payload so React Query mutations can persist the delta back to Supabase.
+
+```ts
+interface KanbanColumn<T> {
+  id: string;
+  columnId: string;
+  title?: string;
+  items: T[];
+  order?: number;
+  isCollapsed?: boolean;
+}
+```
+
+<Tip>Use discriminated unions for card payloads so each card component receives a fully typed metadata object.</Tip>
+
+## Interaction guidelines
+
+- **Drag and drop**: always update the `order` values before sending mutations; never rely on array indexes alone.
+- **Column density**: cap individual columns at ~8 cards for readability. Encourage users to add new boards instead of overloading a single one.
+- **Collapsing**: keep `isCollapsed` in sync between client state and Supabase so collaborative users see consistent layouts.
+- **Empty states**: render educative placeholders (e.g., “Drop a card here”) when a board or column is empty to guide first-time users.
+
+## When to create a new board
+
+Create separate boards when teams need:
+
+- Different commodity mixes or regions.
+- Distinct workflows (procurement vs. sales enablement).
+- Permission boundaries (future roadmap item: board-level sharing).
+
+Keeping concepts scannable within a board makes embedding the docs into `/docs` far more actionable for end users.

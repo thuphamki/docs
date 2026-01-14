@@ -38,6 +38,14 @@
             ]
           },
           {
+            "group": "Pricenxt concepts",
+            "pages": [
+              "pricenxt/boards",
+              "pricenxt/cards",
+              "pricenxt/price-history-chart"
+            ]
+          },
+          {
             "group": "AI tools",
             "pages": [
               "ai-tools/cursor",

@@ -1,0 +1,53 @@
+---
+title: "Price history chart"
+description: "Deep dive into the insight page chart that visualizes historical and forecasted pricing."
+---
+
+## What the chart shows
+
+The price history chart is the hero visualization on the Insight page. It combines historical spot and monthly prices, optional forecast projections, confidence bandwidths, and delta badges so users can understand trajectory at a glance.
+
+<CardGroup cols={2}>
+<Card title="React + ECharts" icon="chart-line" href="#data-sources">
+  Built with `ReactECharts` and the shared `ChartContainer`/`ChartSettingsDropdown` primitives.
+</Card>
+<Card title="Contextual controls" icon="sliders" href="#interactive-controls">
+  Users can switch time ranges, toggle forecast & bandwidth layers, and open the Price Details drawer without leaving the chart.
+</Card>
+</CardGroup>
+
+## Data sources
+
+- **Spot data**: `fetchSpotPriceData` (weekly granularity) queried via React Query when the active variant supports spot pricing.
+- **Monthly data**: `fetchMonthlyPriceData` (month-open averages) used for variants without spot coverage.
+- **Variant context**: `useVariant` resolves localized naming and metadata so legends/tooltips reference the correct product string.
+- **Database contract**: data rows reuse the `prices_with_delta` Postgres function type alias (`PriceRow`).
+
+<Tip>Always route date inputs through `toDbLocale` before hitting Supabase to avoid locale-induced gaps.</Tip>
+
+## Interactive controls
+
+1. **TimeRangeSelector**: maps to the `TimeRange` enum (12/24/36/48 data points). The helper `getDataLimitFromRange` keeps the query payload lean.
+2. **Chart settings**: a Slideout houses checkboxes for:
+   - _Show forecast_ (`showForecast` + `canShowForecast` guards).
+   - _Display bandwidth_ to render min/max envelopes.
+   - _Average line_ to overlay the rolling average of non-forecast points.
+3. **Details drawer**: `PriceDetailsDrawer` opens from the same page to surface metadata, commentary, and related cards.
+
+## Visual treatments
+
+- **Series layering**: base series uses brand gradients; forecast series switches to a dashed stroke in `CHART_COLORS.forecast`.
+- **Bandwidth**: implemented as two stacked line series (`Band Min`, `Band Range`) so the area fill animates smoothly.
+- **Annotations**: `buildForecastAnnotation` inserts a vertical mark line when forecast data is present, adjusting the x-axis by one bucket so the transition feels natural.
+- **Tooltips**: custom formatter pulls `change_abs`, `change_percent`, and analyst commentary into a 400px panel with styled delta badges via `createBadgeProps`.
+
+## Axis & scale logic
+
+- `computeYAxisBounds` pads min/max values by 10% (or 100 currency units) to prevent clipping.
+- Date ticks use `formatChartDateLabel` and localized `toLocaleDateString` so German vs English tenants see the same cadence in their language.
+
+## Integration checklist
+
+- Wrap the chart with `ChartContainer` so loading states and empty states match other insight components.
+- Always respect the current theme via `useTheme` + `getThemeColors`—both the chart palette and tooltip badges rely on it.
+- When embedding under `/docs`, include a short note linking back to the live Insight page so readers can try the interactions immediately.
