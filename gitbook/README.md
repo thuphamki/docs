@@ -1,9 +1,9 @@
-# Pricenxt Documentation
+# Pricenxt Knowledge Hub
 
-This directory mirrors the core Mintlify docs but in plain Markdown so GitBook can render them. Each concept lives under `pricenxt/` and can be referenced from GitBook's navigation.
+Welcome! This hub gathers the essential guides you need to work comfortably inside the Pricenxt dashboard. Pick a topic below to learn how to set up boards, configure cards, or read the insight charts.
 
-Use this page as the landing section when syncing the repo with GitBook. Update the links below as more guides are added.
+- [Boards overview](pricenxt/boards.md) – How columns and cards fit together to organize your work.
+- [Cards and card types](pricenxt/cards.md) – A tour of the card library and the choices you control.
+- [Price history chart](pricenxt/price-history-chart.md) – Tips for interpreting the Insight page’s main visualization.
 
-- [Boards overview](pricenxt/boards.md)
-- [Cards and card types](pricenxt/cards.md)
-- [Price history chart](pricenxt/price-history-chart.md)
+> More articles will appear here as we expand the documentation. Let us know which topics you’d like to see next.
