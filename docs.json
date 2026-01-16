@@ -7,7 +7,7 @@
     "light": "#BAE4FC",
     "dark": "#083447"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/pricenxt.svg",
   "navigation": {
     "tabs": [
       {
@@ -40,9 +40,9 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
-    "href": "/docs"
+    "light": "/logo/pricenxt.svg",
+    "dark": "/logo/pricenxt.svg",
+    "href": "/"
   },
   "navbar": {
     "links": [
@@ -53,8 +53,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Open Pricenxt",
-      "href": "/"
+      "label": "Dashboard",
+      "href": "https://dashboard.mintlify.com"
     }
   },
   "contextual": {
