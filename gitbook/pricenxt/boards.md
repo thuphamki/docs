@@ -1,52 +1,42 @@
 # Boards Overview
 
-Boards organize the insights users care about inside the Pricenxt dashboard. Each board belongs to a user or workspace and contains a set of ordered columns, and every column holds cards that display price intelligence, comparisons, or alerts.
+Boards act like customizable command centers. Each one collects the market signals, commentary, and alerts your team needs, so you can scan a single page instead of juggling spreadsheets or inbox threads.
 
-> **Note**: Boards are usually the first surface users see after logging in. Column order and content density directly influence perceived value.
+> **Note:** Most people land on a board right after signing in. A clear structure here means fewer clicks to insight.
 
-## Board Anatomy
+## What Lives on a Board
 
-- **Columns** – ordered swimlanes (e.g., Watchlist, Active Deals, Completed). Users can collapse them to reduce noise.
-- **Cards** – self-contained widgets (price deltas, spreads, lists, comparisons) that inherit their rendering logic from the Cards registry.
+- **Columns**: vertical lanes that group cards by workflow (Watchlist, Active Deals, Post-mortem, etc.). Collapse a lane to keep focus when things get busy.
+- **Cards**: mini dashboards that show a metric, comparison, or alert. You decide which card sits in which column.
 
-### Columns
+## Columns at a Glance
 
-- Persisted in the Supabase `columns` table and loaded through `fetchBoard`.
-- Store `order`, `name`, and `is_collapsed` so personalization survives reloads.
-- Support collapse/expand via the `onToggleCollapse` handler exposed on `KanbanProps`.
+- **Name clearly**: titles like "Near-term buys" or "Asia shipping" help teammates scan faster.
+- **Collapse when needed**: tap the caret on the column header to hide cards you only check occasionally.
+- **Reorder freely**: drag the header to move an entire column left or right. The layout is saved automatically for the next visit.
 
-### Cards Inside a Column
+## Adding and Arranging Cards
 
-- Saved as nested records within each column result from the same Supabase query.
-- Sorted by the `order` field so drag-and-drop operations translate into deterministic layouts.
-- Include a `type` and `metadata` payload to tell the Cards pipeline which component to mount and how to configure it.
+1. Select **Add card** inside any column.
+2. Browse or search for the insight you need (price trend, spread, comparison, gauge, etc.).
+3. Fill in the short form—pick the variants, time window, or thresholds—and save. The card appears instantly.
+4. Drag cards up or down to prioritize what should be read first. The order syncs for everyone who can view the board.
 
-## Data Lifecycle
+> **Tip:** Duplicate a card when you just need to tweak the variants or period. It is faster than rebuilding from scratch.
 
-1. `fetchBoard(boardId)` fetches a board plus nested columns/cards in one Supabase call.
-2. The response is normalized into the `KanbanColumn` / `KanbanProps` structure before rendering.
-3. Reordering, collapsing, or editing cards emits an `onChange` payload so React Query mutations can persist updates back to Supabase.
+## Keeping Boards Tidy
 
-```ts
-interface KanbanColumn<T> {
-  id: string;
-  columnId: string;
-  title?: string;
-  items: T[];
-  order?: number;
-  isCollapsed?: boolean;
-}
-```
+- Limit a column to roughly eight cards so each one has room to breathe.
+- Use the **Add column** button instead of stacking dozens of cards in a single lane.
+- Rename or archive stale cards; anything you no longer watch can move to a "Parking lot" column to stay out of sight.
+- Empty columns show a gentle placeholder that reminds teammates they can drag cards in—helpful during onboarding.
 
-> **Tip**: Use discriminated unions for card payloads so every card component receives a fully typed metadata object.
+## When to Start a New Board
 
-## Interaction Guidelines
+Create a fresh board when:
 
-- **Drag and drop** – always update stored `order` values before persisting; avoid relying on array indexes.
-- **Column density** – keep each column to roughly eight cards for readability; encourage additional boards instead of overloaded columns.
-- **Collapsing** – synchronize `isCollapsed` between client state and Supabase so collaborators see consistent layouts.
-- **Empty states** – show instructional placeholders (e.g., “Drop a card here”) when a board or column has no cards yet.
+- Different teams (procurement, sales, finance) need their own priorities.
+- You track separate regions or commodities that rarely overlap.
+- You are preparing an executive briefing and want a clean narrative that will not disturb day-to-day boards.
 
-## When to Create a New Board
-
-Create separate boards when teams need different commodity mixes or regions, distinct workflows (procurement vs. sales), or when future sharing boundaries require isolation. Keeping concepts scoped to specific boards also makes the `/docs` embed more actionable for end users.
+Label boards clearly and share them with the teammates who need that context. Everyone sees live data, so a single update benefits the entire group.

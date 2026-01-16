@@ -1,41 +1,51 @@
 # Price History Chart
 
-The price history chart is the hero visualization on the Insight page. It blends historical spot/monthly prices, optional forecasts, confidence bandwidths, and delta badges so users can understand trajectory at a glance.
+The price history chart is the hero of every Insight page. It blends historical spot or monthly prices, optional forecasts, confidence bandwidths, and delta badges so you can understand trajectory at a glance.
 
-## Key Traits
+## What the Chart Shows
 
-- Built with `ReactECharts` plus shared primitives like `ChartContainer`, `ChartSettingsDropdown`, and `TimeRangeSelector`.
-- Supports contextual interactions so users can toggle forecast/bandwidth layers and open the Price Details drawer without leaving the chart.
+- Historical **spot** or **monthly** prices (depending on what the selected variant supports).
+- Optional **forecasts** that extend the line forward so you can see where analysts expect the trend to go.
+- A **bandwidth envelope** that hints at the optimistic and pessimistic scenarios.
+- Compact **delta badges** that spell out how much the price moved over the window you selected.
 
-## Data Sources
+Everything is updated live, so you can trust it in meetings and exports.
 
-- **Spot data** – `fetchSpotPriceData` (weekly). Loaded via React Query when the variant supports spot pricing.
-- **Monthly data** – `fetchMonthlyPriceData` (month-open averages) for variants without spot coverage.
-- **Variant context** – `useVariant` resolves localized naming and metadata for legends/tooltips.
-- **Database contract** – rows reuse the `prices_with_delta` Postgres function type alias (`PriceRow`).
+## Reading the Layers
 
-> **Tip**: Route date inputs through `toDbLocale` before hitting Supabase to avoid locale-related gaps.
+- **Solid line**: actual traded or published prices. Hover any point to see the exact value and the time stamp in your locale.
+- **Dashed line**: forecasted values. They always start where the historical data ends.
+- **Shaded band**: the lighter area around the line shows the potential range. A wider band means more volatility or uncertainty.
+- **Badges above the chart**: summarize the absolute and percentage move versus the previous period so you do not have to calculate it yourself.
 
-## Interactive Controls
+> **Tip:** When the dashed line and the solid line overlap, use the legend to temporarily hide the forecast so you can focus on just the historical movement.
 
-1. **Time range** – `TimeRangeSelector` maps to 12/24/36/48 data points via `getDataLimitFromRange`.
-2. **Chart settings** – slideout checkboxes toggle forecast visibility, bandwidth envelopes, and average lines.
-3. **Details drawer** – `PriceDetailsDrawer` surfaces metadata, commentary, and related cards without leaving the page.
+## Controls You Can Use
 
-## Visual Treatments
+1. **Time range** – switch between 12, 24, 36, or 48 data points to zoom in on recent action or pull back for context.
+2. **Chart settings** – open the slider menu to toggle forecast, bandwidth, or the rolling average line on or off.
+3. **Details drawer** – click *Price details* to open commentary, methodology, and related cards without leaving the page.
 
-- Base series use brand gradients; forecast series switches to a dashed stroke defined in `CHART_COLORS.forecast`.
-- Bandwidth is rendered through two stacked line series (`Band Min`, `Band Range`) so the filled area animates smoothly.
-- `buildForecastAnnotation` inserts a mark line when forecast data exists, offsetting timestamps so the transition is natural.
-- Custom tooltips format `change_abs`, `change_percent`, and analyst commentary into a styled panel using `createBadgeProps`.
+Each change updates the chart instantly, making it easy to test a scenario while someone is asking the question.
 
-## Axis and Scale Logic
+## Data Sources in Plain Language
 
-- `computeYAxisBounds` pads min/max values by roughly 10% (or 100 currency units) to avoid clipping.
-- Date ticks rely on `formatChartDateLabel` plus localized `toLocaleDateString`, so German and English tenants see appropriate labels.
+- If the product trades frequently, you will see **weekly spot prices**.
+- If it only settles monthly, the chart switches to **month-open averages** so there are no gaps.
+- Localized product names ensure legends, tooltips, and exports all use the same label your team expects.
 
-## Integration Checklist
+No manual formatting is needed—the system automatically handles currencies, locales, and number precision.
 
-- Wrap the chart with `ChartContainer` to reuse loading and empty states from other insight components.
-- Respect the active theme via `useTheme` + `getThemeColors`; both the palette and tooltip badges depend on it.
-- When embedding under `/docs`, link back to the live Insight page so readers can immediately try the interactions.
+## Visual Cues That Help Storytelling
+
+- The y-axis always includes a buffer so the line never touches the frame, making presentations easier to read.
+- Date labels automatically translate to the language set in your profile (e.g., German vs. English).
+- Forecast sections include a subtle divider line to show where assumptions start, so stakeholders can see what is confirmed history versus projected.
+
+Use these cues when narrating the chart: “Everything left of the divider is realized. Right of it is our forecast band.”
+
+## Sharing Tips
+
+- Screenshot or export right after toggling the layers you care about. The chart remembers your choices until you refresh.
+- Pair the chart with a board card if you want the same view inside a column—cards reuse the identical data pipeline.
+- Add a link back to the live Insight page whenever you drop the chart into a doc so readers can interact with the controls themselves.

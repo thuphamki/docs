@@ -1,58 +1,37 @@
 # Cards and Card Types
 
-Cards are the atomic insight units that populate every board column. They encapsulate data fetching, formatting, and visualization logic behind a consistent API so users can mix and match analytics without touching SQL.
+Cards are self-contained insights that pull data, format it, and present a story on your board. You only manage two simple inputs when creating one:
 
-Each card instance stores:
+1. **Title** – the label that appears at the top of the card. Use plain language like "Asia PX vs PET".
+2. **Settings** – a short form that asks for variants, comparison lists, thresholds, or colors depending on the card type.
 
-1. **Title** – the label displayed on the card chrome.
-2. **Metadata** – type-specific configuration captured via the card configurator (variant IDs, comparison lists, gauge thresholds, etc.).
+That’s it—the heavy lifting happens behind the scenes.
 
-```ts
-export interface CardFormData<T extends CardMetadata = CardMetadata> {
-  readonly title: string;
-  readonly metadata: T;
-}
-```
+## Creating a Card in 4 Steps
 
-## Lifecycle
+1. Click **Add card** inside the column where you want the insight to live.
+2. Choose a card type. Each tile shows an example so you can pick a format quickly.
+3. Fill in the prompts (variants, date range, alerts, etc.) and rename the title if needed.
+4. Save and drag the card to the position that makes sense for your workflow.
 
-1. The user opens the card configurator (`select → configure`).
-2. The selected card type provides default metadata from the registry.
-3. Validation (`CardFormValidation`) confirms required fields/variants are present.
-4. On save, the card persists under the active column and renders through the card registry.
+> **Tip:** Need a similar view with a different product? Duplicate the card, change the variant, and you’re done.
 
-> **Tip**: Metadata objects are read-only to prevent accidental mutation. Clone before editing local state in forms.
+## Card Types at a Glance
 
-## Card Types
-
-| Type | Usage | Key metadata |
+| Card | Use it when you want to… | What you control |
 | --- | --- | --- |
-| `price` | Track a single variant (spot or monthly) | `variantId`, `deltaPeriod`, `showForecast`, `chartStyle` |
-| `delta` | Highlight period-over-period deltas | `variantId`, `deltaPeriod`, `showForecast` |
-| `list` | Monitor multiple variants in a single list | `variantIds[]`, `deltaPeriod`, highlight color |
-| `compare` | Compare up to four variants side by side | `variantIds[]`, `deltaPeriod` |
-| `gauge` | Threshold-driven KPI views | `variantId`, `gauge { min, max, t1 }`, `chartStyle` |
-| `spread` | Track spreads between two variants | `variantIds[]`, `deltaPeriod`, `calculationMode` |
+| **Price** | Track one product’s spot or monthly price over time. | Variant, comparison period, optional forecast + chart style. |
+| **Delta** | Highlight how today compares with last week, month, or quarter. | Variant and delta period, with optional forecast toggle. |
+| **List** | Watch several variants in one compact table. | Up to 10 variants, period for deltas, optional highlight color. |
+| **Compare** | Place up to four variants side by side. | 2–4 variants plus the time period for the comparison. |
+| **Gauge** | Monitor a KPI against target zones (utilization, spread, etc.). | Variant plus minimum/maximum/threshold values and style. |
+| **Spread** | Measure the distance between two variants. | Two variants, comparison period, and calculation mode. |
 
-All available IDs live in `CARD_TYPE_OPTIONS`, keeping filters, selectors, and Supabase enums aligned.
+Categories such as **commodity**, **capacity**, or **currency** help you filter while browsing the library. Status badges (for example, *Coming soon*) signal experimental ideas so you know what to expect before adding the card.
 
-```ts
-export const CARD_TYPE_OPTIONS = [
-  { id: "price", labelKey: "board.filters.card-types.price" },
-  // ...
-];
-```
+## Preview vs. Live View
 
-## Categories and Status Badges
+- **Preview**: When you are in the configurator, you see a lightweight mock-up that reflects the settings you choose. It is meant to confirm the layout before saving.
+- **Live card**: Once on the board, the card updates with real data, deltas, and alerts. Use the pencil icon to reopen the configurator with the same settings whenever you need edits.
 
-- **Categories** (`CardCategory`) cluster cards when browsing (commodity, capacity, arbitrage, currency, plastixx, news).
-- **Status** (`CardStatus`) flags experimental or upcoming types (e.g., `coming-soon`), surfaced as Untitled UI badges in the configurator.
-
-> **Callout**: Combine category + status metadata to drive feature-flag rollouts without branching the registry.
-
-## Display vs. Preview Components
-
-- `CardPreviewProps` power lightweight previews inside the configurator.
-- `CardDisplayProps` render the live dashboard cards and receive optional `onEdit` handlers so users can relaunch the configurator with the same metadata.
-
-Keeping these props aligned ensures cards render consistently across creation, duplication, and drag-and-drop flows.
+Both experiences mirror each other, so what you approve in preview is what the rest of the team will read on the board.

@@ -1,53 +1,53 @@
----
 title: "Price history chart"
-description: "Deep dive into the insight page chart that visualizes historical and forecasted pricing."
+description: "Understand every layer of the Insight page chart so you can explain price moves with confidence."
 ---
 
 ## What the chart shows
 
-The price history chart is the hero visualization on the Insight page. It combines historical spot and monthly prices, optional forecast projections, confidence bandwidths, and delta badges so users can understand trajectory at a glance.
+The price history chart is the hero of every Insight page. It blends:
 
-<CardGroup cols={2}>
-<Card title="React + ECharts" icon="chart-line" href="#data-sources">
-  Built with `ReactECharts` and the shared `ChartContainer`/`ChartSettingsDropdown` primitives.
-</Card>
-<Card title="Contextual controls" icon="sliders" href="#interactive-controls">
-  Users can switch time ranges, toggle forecast & bandwidth layers, and open the Price Details drawer without leaving the chart.
-</Card>
-</CardGroup>
+- Historical **spot** or **monthly** prices (depending on what the selected variant supports).
+- Optional **forecasts** that extend the line forward so you can see where analysts expect the trend to go.
+- A **bandwidth envelope** that hints at the optimistic and pessimistic scenarios.
+- Compact **delta badges** that spell out how much the price moved over the window you selected.
 
-## Data sources
+Everything is updated live, so you can trust it in meetings and exports.
 
-- **Spot data**: `fetchSpotPriceData` (weekly granularity) queried via React Query when the active variant supports spot pricing.
-- **Monthly data**: `fetchMonthlyPriceData` (month-open averages) used for variants without spot coverage.
-- **Variant context**: `useVariant` resolves localized naming and metadata so legends/tooltips reference the correct product string.
-- **Database contract**: data rows reuse the `prices_with_delta` Postgres function type alias (`PriceRow`).
+## Reading the layers
 
-<Tip>Always route date inputs through `toDbLocale` before hitting Supabase to avoid locale-induced gaps.</Tip>
+- **Solid line**: actual traded or published prices. Hover any point to see the exact value and the time stamp in your locale.
+- **Dashed line**: forecasted values. They always start where the historical data ends.
+- **Shaded band**: the lighter area around the line shows the potential range. A wider band means more volatility or uncertainty.
+- **Badges above the chart**: summarize the absolute and percentage move versus the previous period so you do not have to calculate it yourself.
 
-## Interactive controls
+<Tip icon="eye">When the dashed line and the solid line overlap, use the legend to temporarily hide the forecast so you can focus on just the historical movement.</Tip>
 
-1. **TimeRangeSelector**: maps to the `TimeRange` enum (12/24/36/48 data points). The helper `getDataLimitFromRange` keeps the query payload lean.
-2. **Chart settings**: a Slideout houses checkboxes for:
-   - _Show forecast_ (`showForecast` + `canShowForecast` guards).
-   - _Display bandwidth_ to render min/max envelopes.
-   - _Average line_ to overlay the rolling average of non-forecast points.
-3. **Details drawer**: `PriceDetailsDrawer` opens from the same page to surface metadata, commentary, and related cards.
+## Controls you can use
 
-## Visual treatments
+1. **Time range** – Switch between 12, 24, 36, or 48 data points to zoom in on recent action or pull back for context.
+2. **Chart settings** – Open the slider menu to toggle forecast, bandwidth, or the rolling average line on or off.
+3. **Details drawer** – Click *Price details* to open commentary, methodology, and related cards without leaving the page.
 
-- **Series layering**: base series uses brand gradients; forecast series switches to a dashed stroke in `CHART_COLORS.forecast`.
-- **Bandwidth**: implemented as two stacked line series (`Band Min`, `Band Range`) so the area fill animates smoothly.
-- **Annotations**: `buildForecastAnnotation` inserts a vertical mark line when forecast data is present, adjusting the x-axis by one bucket so the transition feels natural.
-- **Tooltips**: custom formatter pulls `change_abs`, `change_percent`, and analyst commentary into a 400px panel with styled delta badges via `createBadgeProps`.
+Each change updates the chart instantly, making it easy to test a scenario while someone is asking the question.
 
-## Axis & scale logic
+## Data sources in plain language
 
-- `computeYAxisBounds` pads min/max values by 10% (or 100 currency units) to prevent clipping.
-- Date ticks use `formatChartDateLabel` and localized `toLocaleDateString` so German vs English tenants see the same cadence in their language.
+- If the product trades frequently, you will see **weekly spot prices**.
+- If it only settles monthly, the chart switches to **month-open averages** so there are no gaps.
+- Localized product names ensure legends, tooltips, and exports all use the same label your team expects.
 
-## Integration checklist
+No manual formatting is needed—the system automatically handles currencies, locales, and number precision.
 
-- Wrap the chart with `ChartContainer` so loading states and empty states match other insight components.
-- Always respect the current theme via `useTheme` + `getThemeColors`—both the chart palette and tooltip badges rely on it.
-- When embedding under `/docs`, include a short note linking back to the live Insight page so readers can try the interactions immediately.
+## Visual cues that help storytelling
+
+- The y-axis always includes a buffer so the line never touches the frame, making presentations easier to read.
+- Date labels automatically translate to the language set in your profile (e.g., German vs. English).
+- Forecast sections include a subtle divider line to show where assumptions start, so stakeholders can see what is confirmed history versus projected.
+
+Use these cues when narrating the chart: “Everything left of the divider is realized. Right of it is our forecast band.”
+
+## Sharing tips
+
+- Screenshot or export right after toggling the layers you care about. The chart remembers your choices until you refresh.
+- Pair the chart with a board card if you want the same view inside a column—cards reuse the identical data pipeline.
+- Add a link back to the live Insight page whenever you drop the chart into a doc so readers can interact with the controls themselves.
