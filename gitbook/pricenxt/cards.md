@@ -11,7 +11,7 @@ That’s it—the heavy lifting happens behind the scenes.
 
 1. Click **Add card** inside the column where you want the insight to live.
 2. Choose a card type. Each tile shows an example so you can pick a format quickly.
-3. Fill in the prompts (variants, date range, alerts, etc.) and rename the title if you needed.
+3. Fill in the prompts (variants, date range, alerts, etc.) and rename the title if needed.
 4. Save and drag the card to the position that makes sense for your workflow.
 
 > **Tip:** Need a similar view with a different product? Duplicate the card, change the variant, and you’re done.
