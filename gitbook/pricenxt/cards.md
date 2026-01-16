@@ -1,4 +1,4 @@
-# Cards and Card Types
+# Cards and card types
 
 Cards are self-contained insights that pull data, format it, and present a story on your board. You only manage two simple inputs when creating one:
 
@@ -11,27 +11,27 @@ That’s it—the heavy lifting happens behind the scenes.
 
 1. Click **Add card** inside the column where you want the insight to live.
 2. Choose a card type. Each tile shows an example so you can pick a format quickly.
-3. Fill in the prompts (variants, date range, alerts, etc.) and rename the title if needed.
+3. Fill in the prompts (variants, date range, alerts, etc.) and rename the title if you needed.
 4. Save and drag the card to the position that makes sense for your workflow.
 
 > **Tip:** Need a similar view with a different product? Duplicate the card, change the variant, and you’re done.
 
 ## Card Types at a Glance
 
-| Card | Use it when you want to… | What you control |
-| --- | --- | --- |
-| **Price** | Track one product’s spot or monthly price over time. | Variant, comparison period, optional forecast + chart style. |
-| **Delta** | Highlight how today compares with last week, month, or quarter. | Variant and delta period, with optional forecast toggle. |
-| **List** | Watch several variants in one compact table. | Up to 10 variants, period for deltas, optional highlight color. |
-| **Compare** | Place up to four variants side by side. | 2–4 variants plus the time period for the comparison. |
-| **Gauge** | Monitor a KPI against target zones (utilization, spread, etc.). | Variant plus minimum/maximum/threshold values and style. |
-| **Spread** | Measure the distance between two variants. | Two variants, comparison period, and calculation mode. |
+| Card        | Use it when you want to…                                        | What you control                                                |
+| ----------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Price**   | Track one product’s spot or monthly price over time.            | Variant, comparison period, optional forecast + chart style.    |
+| **Delta**   | Highlight how today compares with last week, month, or quarter. | Variant and delta period, with optional forecast toggle.        |
+| **List**    | Watch several variants in one compact table.                    | Up to 10 variants, period for deltas, optional highlight color. |
+| **Compare** | Place up to four variants side by side.                         | 2–4 variants plus the time period for the comparison.           |
+| **Gauge**   | Monitor a KPI against target zones (utilization, spread, etc.). | Variant plus minimum/maximum/threshold values and style.        |
+| **Spread**  | Measure the distance between two variants.                      | Two variants, comparison period, and calculation mode.          |
 
-Categories such as **commodity**, **capacity**, or **currency** help you filter while browsing the library. Status badges (for example, *Coming soon*) signal experimental ideas so you know what to expect before adding the card.
+Categories such as **commodity**, **capacity**, or **currency** help you filter while browsing the library. Status badges (for example, _Coming soon_) signal experimental ideas so you know what to expect before adding the card.
 
 ## Preview vs. Live View
 
-- **Preview**: When you are in the configurator, you see a lightweight mock-up that reflects the settings you choose. It is meant to confirm the layout before saving.
-- **Live card**: Once on the board, the card updates with real data, deltas, and alerts. Use the pencil icon to reopen the configurator with the same settings whenever you need edits.
+* **Preview**: When you are in the configurator, you see a lightweight mock-up that reflects the settings you choose. It is meant to confirm the layout before saving.
+* **Live card**: Once on the board, the card updates with real data, deltas, and alerts. Use the pencil icon to reopen the configurator with the same settings whenever you need edits.
 
 Both experiences mirror each other, so what you approve in preview is what the rest of the team will read on the board.
