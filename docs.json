@@ -16,9 +16,9 @@
           {
             "group": "Pricenxt concepts",
             "pages": [
-              "docs/pricenxt/boards",
-              "docs/pricenxt/cards",
-              "docs/pricenxt/price-history-chart"
+              "pricenxt/boards",
+              "pricenxt/cards",
+              "pricenxt/price-history-chart"
             ]
           }
         ]
